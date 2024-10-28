@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fortuneai/FlowPages/LandingPage.dart';
 import 'package:gap/gap.dart';
 import 'package:get/route_manager.dart';
 
@@ -15,33 +16,42 @@ class Onboardingpage extends StatelessWidget {
           decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage(
-                    "lib/FlowPages/assets/image/background.jpg",
+                    "assets/image/background.jpg",
                   ),
                   fit: BoxFit.cover)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
-                color: Colors.black.withOpacity(0.5), 
-                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Welcome To Fortune Ai",
+                color: Colors.black.withOpacity(0.5),
+                padding: const EdgeInsets.all(8.0),
+                child: const Text(
+                  "Welcome To FortuneAi",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 35),
                 ),
               ),
-              Card(
-                elevation: 5,
-                shadowColor: Colors.purple,
+              Gap(10),
+              GestureDetector(
+                onTap: () => Get.to(()=>LandingPage()),
                 child: Container(
-                  width: Get.width / 2,
-                  height: 50,
-                  decoration: BoxDecoration(color: Colors.purple),
+                  width: Get.width / 1.5,
+                  height: 60,
+                  decoration: BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius: BorderRadius.circular(16)),
+                  child: const Center(
+                      child: Text(
+                    "I agree Terms And Conditions",
+                    //textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
+                  )),
                 ),
               ),
-              Gap(200)
+              const Gap(200)
             ],
           ),
         ),

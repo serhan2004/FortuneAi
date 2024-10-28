@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fortuneai/FlowPages/resultPage.dart';
 import 'package:fortuneai/singletons.dart';
 import 'package:gap/gap.dart';
+import 'package:get/route_manager.dart';
 
 class SecondAskPage extends StatelessWidget {
   const SecondAskPage({super.key});
@@ -51,6 +53,8 @@ class SecondAskPage extends StatelessWidget {
         userSingleton.relationshipStatus =
             relationshipStatusController.text.trim();
         userSingleton.birthTime = timeOfBirthController.text.trim();
+
+        Get.to(()=>ResultPage());
       }
     }
 
