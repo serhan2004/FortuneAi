@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fortuneai/FlowPages/SecondAskPage.dart';
+import 'package:fortuneai/singletons.dart';
 import 'package:gap/gap.dart';
 import 'package:get/route_manager.dart';
 
@@ -65,6 +66,7 @@ class _LandingPageState extends State<LandingPage> {
                     if (usernameController.text.trim().isEmpty) {
                       errorText = "Name cannot be empty!";
                     } else {
+                      userSingleton.username = usernameController.text.trim();
                       errorText = null; // Hata yoksa hata mesajını temizle
                       Get.to(()=>SecondAskPage());
                     }
