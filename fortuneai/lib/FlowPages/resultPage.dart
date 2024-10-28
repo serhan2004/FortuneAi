@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+import 'package:fortuneai/singletons.dart';
 import 'package:get/route_manager.dart';
 
 class ResultPage extends StatefulWidget {
@@ -64,8 +65,8 @@ class _ResultPageState extends State<ResultPage> {
           {
             "role": "user",
             "content":
-                "Adım : Serhan, Doğum Tarihim 09/11/2004, Doğum saatim 02:12, ilişki durumum : Sevgilimden yeni ayrıldım" +
-                    " Benim hakkımda daha fazla bilgi : Haliç Üniversitesi Yazılım mühendisliği 1. Sınıf öğrencisiyim ve gdg on campus organizatörüyüm"
+                "Adım : ${userSingleton.username}, Doğum Tarihim ${userSingleton.birthDate}, Doğum saatim:${userSingleton.birthTime}, ilişki durumum :${userSingleton.relationshipStatus}" +
+                    " Benim hakkımda daha fazla bilgi : ${userSingleton.aboutuser}"
           }
         ],
       );

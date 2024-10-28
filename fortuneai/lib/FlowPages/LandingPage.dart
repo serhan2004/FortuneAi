@@ -69,7 +69,7 @@ class _LandingPageState extends State<LandingPage> {
                     } else {
                       userSingleton.username = usernameController.text.trim();
                       errorText = null; // Hata yoksa hata mesajını temizle
-                      Get.to(()=>ResultPage());
+                      Get.to(()=>SecondAskPage());
                     }
                   });
                 },
