@@ -10,28 +10,46 @@ class ResultPage extends StatefulWidget {
 }
 
 class _ResultPageState extends State<ResultPage> {
+  String result = ""; // Yanıtı saklayacak değişken
+  bool isLoading = true; // Yüklenme durumunu izlemek için
+
   @override
   void initState() {
     super.initState();
     initResponse();
   }
-  String result = "";
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text(
+          "Your Future",
+          style: TextStyle(
+              color: Colors.purple, fontWeight: FontWeight.w500, fontSize: 23)
+        ),
+      ),
       backgroundColor: Colors.black,
       body: Center(
         child: Card(
           color: Colors.grey.shade900,
           child: Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(16),
             child: Container(
-              child: Center(child: Text(result, style:  TextStyle(color: Colors.white, fontSize: 13),)),
               width: Get.width,
-              height: 500,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade900
+              height: Get.height / 1.7,
+              decoration: BoxDecoration(color: Colors.grey.shade900),
+              child: SingleChildScrollView(
+                child: Center(
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(
+                          result, // Yanıt burada görüntülenir
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 16),
+                        ),
+                ),
               ),
             ),
           ),
@@ -41,9 +59,9 @@ class _ResultPageState extends State<ResultPage> {
   }
 
   void initResponse() async {
-    final request = ChatCompleteText(
-
-        model: Gpt4oMini2024ChatModel(),
+    try {
+      final request = ChatCompleteText(
+        model: Gpt4oMini2024ChatModel(), // Geçerli bir model adı
         messages: [
           {"role": "system", "content": firstContent},
           {
@@ -52,30 +70,31 @@ class _ResultPageState extends State<ResultPage> {
                 "Adım : Serhan, Doğum Tarihim 09/11/2004, Doğum saatim 02:12, ilişki durumum : Sevgilimden yeni ayrıldım" +
                     " Benim hakkımda daha fazla bilgi : Haliç Üniversitesi Yazılım mühendisliği 1. Sınıf öğrencisiyim ve gdg on campus organizatörüyüm"
           }
-        ]);
-    final response = await OpenAI.instance.onChatCompletion(request: request);
-    for (var element in response!.choices) {
-      if (element.message != null) {
-        print(element.message!.content);
-       
-      }
+        ],
+      );
+
+      final response = await OpenAI.instance.onChatCompletion(request: request);
+
+      // Yanıt alındığında UI'ı güncelle
+      setState(() {
+        result = response?.choices.first.message?.content ?? "Yanıt alınamadı";
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error during API request: $e");
+      setState(() {
+        result = "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
+        isLoading = false;
+      });
     }
   }
 
   final firstContent = """
-First, I’ll start by interpreting the user’s input, focusing on their birth date, birth time, personality traits, love life, name, and any other unique characteristics they provide. I'll use these details to uncover relevant astrological or tarot-based insights. 
-
-Next, I'll move on to crafting personalized predictions for each life aspect they’re curious about:
-
-1. **Love Life**: I'll provide a detailed and conversational narrative, focusing on potential developments, challenges, or opportunities based on the user's inputs. I’ll make sure it feels unique and authentic to them.
-
-2. **Career**: Here, I’ll aim for an insightful reading that’s motivational but also realistic, weaving in career growth, any noted personality strengths, or potential shifts that could come into play.
-
-3. **Family Life**: This prediction will be warm and family-oriented, giving a sense of harmony or potential transformations within their family dynamic.
-
-4. **Tarot Reading**: I’ll interpret a tarot spread based on the insights from their input, making it a bit mystical while staying in tune with the other predictions.
-
-I'll present each prediction as a cohesive, short paragraph, creating a friendly, conversational tone for a personal touch. Each will be crafted to be plausible and engaging, ensuring the reading resonates on a meaningful level. I'll also stay mindful of cultural sensitivities to keep the reading inclusive and respectful. 
-
-Now, I’m ready to create a personalized experience for the user! """;
+First, I will interpret the user's date of birth, time of birth, personality traits, love life, name and other characteristics. Based on this data, I will get astrological or tarot-based insights.Then I will prepare personalized predictions for each life area:
+Love Life: Depending on the user's characteristics, I will offer an authentic and sincere narrative, focusing on developments, challenges or opportunities.
+Career: I will prepare a realistic and motivating career forecast, highlighting strengths and possible changes.
+Family Life: I will provide a warm and intimate insight, addressing harmony or changes in the family.
+Tarot: I will give a reading in harmony with the other predictions, adding a mystical touch with a Tarot opening.
+I will create a user-specific, engaging experience by presenting each prediction as a short, intimate paragraph.
+Translated with DeepL.com (free version) """;
 }

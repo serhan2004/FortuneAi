@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final openAI = OpenAI.instance.build(
         token: OPENAI_API_KEY,
-        baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
+        baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 10)),
         enableLog: true);
 
         
