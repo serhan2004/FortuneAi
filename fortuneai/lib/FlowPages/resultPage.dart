@@ -1,5 +1,6 @@
-import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:get/route_manager.dart';
 
 class ResultPage extends StatefulWidget {
@@ -24,10 +25,10 @@ class _ResultPageState extends State<ResultPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(
+        title: const Text(
           "Your Future",
           style: TextStyle(
-              color: Colors.purple, fontWeight: FontWeight.w500, fontSize: 23)
+              color: Colors.purple, fontWeight: FontWeight.w500, fontSize: 23),
         ),
       ),
       backgroundColor: Colors.black,
@@ -44,11 +45,7 @@ class _ResultPageState extends State<ResultPage> {
                 child: Center(
                   child: isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                          result, // Yanıt burada görüntülenir
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 16),
-                        ),
+                      : buildStyledText(result), // RichText widget ile stilize edilmiş yazı
                 ),
               ),
             ),
@@ -75,7 +72,6 @@ class _ResultPageState extends State<ResultPage> {
 
       final response = await OpenAI.instance.onChatCompletion(request: request);
 
-      // Yanıt alındığında UI'ı güncelle
       setState(() {
         result = response?.choices.first.message?.content ?? "Yanıt alınamadı";
         isLoading = false;
@@ -87,6 +83,59 @@ class _ResultPageState extends State<ResultPage> {
         isLoading = false;
       });
     }
+  }
+
+  // Rastgele renk oluşturucu
+  Color getRandomColor() {
+    final random = Random();
+    return Color.fromARGB(
+      255,
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+    );
+  }
+
+  // RichText ile stilize edilmiş yazıyı oluşturur
+  Widget buildStyledText(String text) {
+    final regex = RegExp(r"\*\*(.*?)\*\*"); // **kalın** kısımlarını yakalamak için regex
+
+    final spans = <TextSpan>[];
+    int lastIndex = 0;
+
+    // Regex ile yakalanan bölümleri işliyoruz
+    for (final match in regex.allMatches(text)) {
+      // Kalın metinden önceki kısmı ekle
+      if (match.start > lastIndex) {
+        spans.add(TextSpan(
+          text: text.substring(lastIndex, match.start),
+          style: const TextStyle(color: Colors.white),
+        ));
+      }
+
+      // Kalın metni ekle ve rastgele renkle stilize et
+      spans.add(TextSpan(
+        text: match.group(1), // ** işaretlerini kaldırarak metni alır
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: getRandomColor(),
+        ),
+      ));
+
+      lastIndex = match.end; // Sonraki metin parçasına geçiş
+    }
+
+    // Kalan kısmı ekle
+    if (lastIndex < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(lastIndex),
+        style: const TextStyle(color: Colors.white),
+      ));
+    }
+
+    return RichText(
+      text: TextSpan(children: spans),
+    );
   }
 
   final firstContent = """
